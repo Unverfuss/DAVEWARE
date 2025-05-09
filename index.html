@@ -111,8 +111,7 @@
 
 <canvas id="cardCanvas" width="750" height="1050"></canvas>
 
-<div id="card" class="card">
-  <div id="cardBackground" class="card-background"></div>
+
 </div>
 
 <script>
@@ -134,8 +133,7 @@
     button.addEventListener('click', () => {
       const val = parseInt(button.getAttribute('data-value'));
       window.selectedScale = val;
-      const cardBackground = document.getElementById('cardBackground');
-      cardBackground.style.backgroundImage = `url('${rarityBgUrls[val]}')`;
+      
     });
   });
 
