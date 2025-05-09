@@ -1,0 +1,285 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DAVEWARE™ CARD PRINTER V1</title>
+  <canvas id="bgCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .button-group {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      margin: 0 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    canvas {
+      display: block;
+      margin: 40px auto;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h1>DAVEWARE™ CARD PRINTER</h1>
+
+  <label for="imgUpload">Upload Image:</label>
+  <input type="file" id="imgUpload" accept="image/*" />
+
+  <div class="tier-selector" id="tierButtons">
+    <button data-value="1" title="Uncommon"></button>
+    <button data-value="2" title="Rare"></button>
+    <button data-value="3" title="Legendary"></button>
+    <button data-value="4" title="Mythical"></button>
+  </div>
+
+  <p id="tierLabel" class="tier-label">Select Rarity</p>
+
+  <label for="cardName">Card Name:</label>
+  <input type="text" id="cardName" placeholder="e.g. Happy Dave" />
+
+  <label for="description">Description:</label>
+  <input type="text" id="description" placeholder="e.g. A joyful and cheery Dave" />
+
+  <div class="button-group">
+    <button onclick="generateCard()">PRINT CARD</button>
+    <button onclick="downloadCard()">DOWNLOAD CARD</button>
+  </div>
+</div>
+
+<canvas id="cardCanvas" width="750" height="1050"></canvas>
+
+<div id="card" class="card">
+  <div id="cardBackground" class="card-background"></div>
+</div>
+
+<script>
+  const bgCanvas = document.getElementById("bgCanvas");
+  const canvas = document.getElementById("cardCanvas");
+  const bgCtx = bgCanvas.getContext("2d");
+  const tierButtons = document.querySelectorAll('#tierButtons button');
+  const tierLabel = document.getElementById('tierLabel');
+
+  let rarityImageMap = {};
+  const rarityBgUrls = {
+    1: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background.png",
+    2: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background2.png",
+    3: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background3.png",
+    4: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background4.png"
+  };
+
+  tierButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const val = parseInt(button.getAttribute('data-value'));
+      window.selectedScale = val;
+      const cardBackground = document.getElementById('cardBackground');
+      cardBackground.style.backgroundImage = `url('${rarityBgUrls[val]}')`;
+    });
+  });
+
+  const tierNames = {
+    1: "Uncommon",
+    2: "Rare",
+    3: "Legendary",
+    4: "Mythical"
+  };
+
+  const tierClasses = {
+    1: "uncommon",
+    2: "rare",
+    3: "legendary",
+    4: "mythical"
+  };
+
+  tierButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const val = parseInt(button.getAttribute('data-value'));
+      tierButtons.forEach(b => {
+        const bVal = parseInt(b.getAttribute('data-value'));
+        b.classList.toggle('active', bVal <= val);
+      });
+      tierLabel.textContent = tierNames[val];
+      window.selectedTier = tierNames[val];
+    });
+  });
+
+  function resizeCanvas() {
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const lineColor = "#80d182";
+  const backgroundColor = "#4ea364";
+  const speed = 0.5;
+  const spacing = 50;
+  let offset = 0;
+
+  function drawBackground() {
+    bgCtx.fillStyle = backgroundColor;
+    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+    bgCtx.strokeStyle = lineColor;
+    bgCtx.lineWidth = 10;
+
+    const diagLength = bgCanvas.width + bgCanvas.height;
+    bgCtx.beginPath();
+
+    for (let i = -diagLength; i < diagLength; i += spacing) {
+      bgCtx.moveTo(i + offset, 0);
+      bgCtx.lineTo(i - bgCanvas.height + offset, bgCanvas.height);
+    }
+
+    bgCtx.stroke();
+  }
+
+  function animate() {
+    offset = (offset + speed) % spacing;
+    drawBackground();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  function downloadCard() {
+    const canvas = document.getElementById("cardCanvas");
+    const link = document.createElement("a");
+    link.download = "custom_card.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+
+  async function generateCard() {
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (Object.keys(rarityImageMap).length === 0) {
+      await loadRarityImages(); // load images only once
+    }
+
+    const rarity = window.selectedScale || 1;
+    const bg = rarityImageMap[rarity];
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+    const fg = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/foreground_type.png");
+    ctx.drawImage(fg, 19, 19, 712, 1012);
+
+    const ib = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Rectangle%201.png");
+    ctx.drawImage(ib, 36, 115, 679, 454);
+
+    const b = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/boxes.png");
+    ctx.drawImage(b, 36, 23, 679, 1005);
+
+    const file = document.getElementById("imgUpload").files[0];
+    if (file) {
+      const userImg = await fileToImage(file);
+      ctx.drawImage(userImg, 92, 169, 569, 345);
+    }
+
+    const msk = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/mask.png");
+    ctx.drawImage(msk, 63, 140, 625, 401);
+
+    ctx.font = "30px sans-serif";
+    ctx.fillStyle = "#000";
+    ctx.fillText(document.getElementById("cardName").value, 50, 100);
+
+    ctx.font = "20px sans-serif";
+    ctx.fillText(document.getElementById("description").value, 50, 400);
+
+    canvas.classList.add("visible");
+  }
+
+  async function loadRarityImages() {
+    for (const key in rarityBgUrls) {
+      rarityImageMap[key] = await loadImage(rarityBgUrls[key]);
+    }
+  }
+
+  function fileToImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.src = src;
+    });
+  }
+
+</script>
+
+</body>
+</html>
