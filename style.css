@@ -86,7 +86,7 @@ p {
   font-weight: bold;
 }
 a:hover {
-  background-color: black;
+  background-color: white;
   animation-name: animatie;
   animation-duration: 2s;
   animation-direction: normal;
