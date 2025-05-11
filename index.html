@@ -2,9 +2,8 @@
 <head>
   <meta charset="UTF-8">
   <title>DAVEWARE™ CARD PRINTER V1</title>
-  <canvas id="bgCanvas" style="position: fixed; top: -41; left: 0; z-index: -1;"></canvas>
   <link rel = "stylesheet" href="style.css">
-  <style>
+<style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
@@ -43,6 +42,10 @@
       box-sizing: border-box;
     }
 
+    .moves {
+      display: grid;
+    }
+    
     .button-group {
       margin-top: 24px;
       text-align: center;
@@ -82,12 +85,31 @@
 </head>
 <body>
 
+<canvas id="bgCanvas" style="position: fixed; top: -41px; left: 0; z-index: -1;"></canvas>  
+  
 <div class="form-container">
   <h1>DAVEWARE™ CARD PRINTER</h1>
 
   <label for="imgUpload">Upload Image:</label>
   <input type="file" id="imgUpload" accept="image/*" />
 
+  <div class="aura-selector">
+<label>Choose Aura:</label>
+<div class="aura-button-wrapper">
+  <img id="selectedAura" src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/autism.png" class="aura-thumb" />
+  <div class="aura-options">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/autism.png" data-url="autism.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/bum.png" data-url="bum.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/green.png" data-url="green.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/fly.png" data-url="fly.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/gpa.png" data-url="gpa.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/funny.png" data-url="funny.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/nerd.png" data-url="nerd.png">
+    <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/lazy.png" data-url="lazy.png">
+  </div>
+</div>
+</div>
+  
   <div class="tier-selector" id="tierButtons">
     <button data-value="1" title="Uncommon"></button>
     <button data-value="2" title="Rare"></button>
@@ -101,7 +123,49 @@
   <input type="text" id="cardName" placeholder="e.g. Happy Dave" />
 
   <label for="description">Description:</label>
-  <input type="text" id="description" placeholder="e.g. A joyful and cheery Dave" />
+  <textarea id="description" placeholder="e.g. A joyful and cheery Dave" rows="4" style="width: 100%;"></textarea>
+
+    <label for="series">Series:</label>
+  <input type="text" id="series" placeholder="e.g. Series 1 / DAVES" />
+
+  <label>Moves:</label>
+<div id="moves" class="moves">
+  <div class="move-row">
+    <input type="text" placeholder="ATK" class="move-name" />
+    <input type="text" placeholder="##%" class="move-percent" />
+    <input type="text" placeholder="99" class="move-number" />
+  </div>
+    <div class="move-row">
+    <input type="text" placeholder="DEF" class="move-name" />
+    <input type="text" placeholder="##%" class="move-percent" />
+    <input type="text" placeholder="99" class="move-number" />
+  </div>
+    <div class="move-row">
+    <input type="text" placeholder="ACT" class="move-name" />
+    <input type="text" placeholder="##%" class="move-percent" />
+    <input type="text" placeholder="99" class="move-number" />
+  </div>
+</div>
+
+  <div class="yogurt-selector">
+  <label>Choose Yogurt:</label>
+  <div class="yogurt-button-wrapper">
+    <img id="selectedYogurt" src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/black_cherry.png" class="yogurt-thumb" />
+   <div class="yogurt-options">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/black_cherry.png" data-url="black_cherry.png">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/key_lime.png" data-url="key_lime.png">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/cookie_dough.png" data-url="cookie_dough.png">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/key_lime_crumble.png" data-url="key_lime_crumble.png">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/peanut_butter_cup.png" data-url="peanut_butter_cup.png">
+      <img src="https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/strawberry_banana.png" data-url="strawberry_banana.png">
+  </div>
+</div>
+</div>
+  
+<div class="number-input-wrapper">
+  <label for="cardNumber">Number (15–99):</label>
+  <input type="number" id="cardNumber" name="cardNumber" min="15" max="99" value="15">
+</div>
 
   <div class="button-group">
     <button onclick="generateCard()">PRINT CARD</button>
@@ -121,6 +185,17 @@
   const tierButtons = document.querySelectorAll('#tierButtons button');
   const tierLabel = document.getElementById('tierLabel');
 
+  const auraToForegroundMap = {
+  "autism.png": "AUT.png",
+  "bum.png": "BUM.png",
+  "green.png": "GRN.png",
+  "fly.png": "FLY.png",
+  "gpa.png": "GPA.png",
+  "funny.png": "FUN.png",
+  "nerd.png": "NRD.png",
+  "lazy.png": "LAZ.png"
+};
+  
   let rarityImageMap = {};
   const rarityBgUrls = {
     1: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background.png",
@@ -129,6 +204,32 @@
     4: "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Background4.png"
   };
 
+  let selectedYogurtUrl = "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/black_cherry.png";
+let selectedAuraUrl = "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/autism.png";
+let selectedForegroundUrl = "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/foregrounds/AUT.png";
+
+document.querySelectorAll('.yogurt-options img').forEach(img => {
+  img.addEventListener('click', () => {
+    const url = img.getAttribute('src');
+    document.getElementById('selectedYogurt').src = url;
+    selectedYogurtUrl = url;
+  });
+});
+
+document.querySelectorAll('.aura-options img').forEach(img => {
+  img.addEventListener('click', () => {
+    const url = img.getAttribute('src');
+    document.getElementById('selectedAura').src = url;
+    selectedAuraUrl = url;
+
+    // extract just the filename from URL
+    const filename = url.split('/').pop();
+    const fgFile = auraToForegroundMap[filename];
+    selectedForegroundUrl = `https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/foregrounds/${fgFile}`;
+  });
+});
+  
+  
   tierButtons.forEach(button => {
     button.addEventListener('click', () => {
       const val = parseInt(button.getAttribute('data-value'));
@@ -203,60 +304,166 @@
 
   animate();
 
-  function downloadCard() {
-    const canvas = document.getElementById("cardCanvas");
+ function downloadCard() {
+  const canvas = document.getElementById("cardCanvas");
+  
+  // Check if the canvas is tainted
+  try {
+    // Attempt to export to PNG (this will throw an error if the canvas is tainted)
+    const dataUrl = canvas.toDataURL("image/png");
+    
     const link = document.createElement("a");
     link.download = "custom_card.png";
-    link.href = canvas.toDataURL("image/png");
+    link.href = dataUrl;
     link.click();
+  } catch (e) {
+    console.error("Failed to download canvas due to tainted canvas:", e);
+    alert("Unable to download due to security restrictions. Please check the content on the canvas.");
+  }
+}
+
+// Load an image with proper CORS (if needed)
+const img = new Image();
+img.crossOrigin = 'Anonymous';  // This is important for cross-origin images
+img.src = 'https://example.com/path/to/image.jpg';
+
+img.onload = function() {
+  const canvas = document.getElementById("cardCanvas");
+  const ctx = canvas.getContext("2d");
+  
+  // Draw your image (or text, etc.)
+  ctx.drawImage(img, 0, 0);
+  
+  // Add any other canvas drawing logic here (text, shapes, etc.)
+  
+  // Now the canvas should not be tainted, and you can download it
+  downloadCard();
+};
+
+function drawEmbossedText(ctx, text, x, y, fontSize = 30, color = "#ffffff") {
+  ctx.font = `${fontSize}px 'Comic Sans MS', cursive`;
+
+  // Set blending mode to 'multiply' for the shadow
+  ctx.globalCompositeOperation = 'darker';
+
+  // Shadow layer (black with 50% opacity)
+  ctx.fillStyle = "rgba(0, 0, 0, 0.5)";  // Black with 50% opacity
+  ctx.fillText(text, x, y - 3);  // Slight offset for shadow
+
+  // Reset blending mode to default for the text
+  ctx.globalCompositeOperation = 'source-over';
+
+  // Foreground color text
+  ctx.fillStyle = color;  // Set the text color to the passed 'color' argument
+  ctx.fillText(text, x, y);
+
+   // Set blending mode to 'multiply' for the shadow
+  ctx.globalCompositeOperation = 'lighter';
+
+  // Shadow layer (black with 50% opacity)
+  ctx.fillStyle = "rgba(255, 255, 255, .2)";  // Black with 50% opacity
+  ctx.fillText(text, x, y + 2);  // Slight offset for shadow
+  
+    // Reset blending mode to default for the text
+  ctx.globalCompositeOperation = 'source-over';
+}
+  
+async function generateCard() {
+  const canvas = document.getElementById("cardCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (Object.keys(rarityImageMap).length === 0) {
+    await loadRarityImages(); // load images only once
   }
 
-  async function generateCard() {
-    const canvas = document.getElementById("cardCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const rarity = window.selectedScale || 1;
+  const bg = rarityImageMap[rarity];
+  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
-    if (Object.keys(rarityImageMap).length === 0) {
-      await loadRarityImages(); // load images only once
-    }
+  const fg = await loadImage(selectedForegroundUrl);
+  ctx.drawImage(fg, 19, 19, 712, 1012);
 
-    const rarity = window.selectedScale || 1;
-    const bg = rarityImageMap[rarity];
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+  const ib = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Rectangle%201.png");
+  ctx.drawImage(ib, 36, 115, 679, 454);
 
-    const fg = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/foreground_type.png");
-    ctx.drawImage(fg, 19, 19, 712, 1012);
+  const b = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/boxes.png");
+  ctx.drawImage(b, 36, 23, 679, 1005);
 
-    const ib = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/Rectangle%201.png");
-    ctx.drawImage(ib, 36, 115, 679, 454);
-
-    const b = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/boxes.png");
-    ctx.drawImage(b, 36, 23, 679, 1005);
-
-    const file = document.getElementById("imgUpload").files[0];
-    if (file) {
-      const userImg = await fileToImage(file);
-      ctx.drawImage(userImg, 92, 169, 569, 345);
-    }
-
-    const msk = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/mask.png");
-    ctx.drawImage(msk, 63, 140, 625, 401);
-
-    const empty = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/empty_slot_1.png")
-    ctx.drawImage(empty, 451, 73, 30, 30)
-    ctx.drawImage(empty, 516, 73, 30, 30)
-    ctx.drawImage(empty, 581, 73, 30, 30)
-    ctx.drawImage(empty, 646, 73, 30, 30)
-    
-    ctx.font = "30px sans-serif";
-    ctx.fillStyle = "#000";
-    ctx.fillText(document.getElementById("cardName").value, 50, 100);
-
-    ctx.font = "20px sans-serif";
-    ctx.fillText(document.getElementById("description").value, 50, 400);
-
-    canvas.classList.add("visible");
+  const thermos = await
+loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/thermos.png")
+  ctx.drawImage(thermos, 538, 570, 99, 191)
+  
+  const cardNumber = document.getElementById("cardNumber").value;
+  drawEmbossedText(ctx, cardNumber, 560, 720, 50, "#bd1616");
+  
+  const file = document.getElementById("imgUpload").files[0];
+  if (file) {
+    const userImg = await fileToImage(file);
+    ctx.drawImage(userImg, 92, 169, 569, 345);
   }
+
+  const msk = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/mask.png");
+  ctx.drawImage(msk, 63, 140, 625, 401);
+
+  const empty = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/empty_slot_1.png")
+  ctx.drawImage(empty, 451, 73, 30, 30)
+  ctx.drawImage(empty, 516, 73, 30, 30)
+  ctx.drawImage(empty, 581, 73, 30, 30)
+  ctx.drawImage(empty, 646, 73, 30, 30)
+
+  const gem = await loadImage("https://raw.githubusercontent.com/Unverfuss/DAVEWARE/refs/heads/main/slot_1.png");
+  const gemXPositions = [451, 516, 581, 646];
+  for (let i = 0; i < rarity; i++) {
+    ctx.drawImage(gem, gemXPositions[i], 73, 30, 30);
+  }
+
+  if (selectedYogurtUrl) {
+  const yogurtImg = await loadImage(selectedYogurtUrl);
+  ctx.drawImage(yogurtImg, 460, 825, 200, 160); // Adjust position and size as needed
+}
+
+  if (selectedAuraUrl) {
+  const auraImg = await loadImage(selectedAuraUrl);
+  ctx.drawImage(auraImg, 345, 60, 60, 60); // Adjust position as needed
+}
+ 
+  
+  // Embossed Card Name
+  drawEmbossedText(ctx, document.getElementById("cardName").value, 84, 100, 30);
+
+    // Embossed Series Name
+  drawEmbossedText(ctx, document.getElementById("series").value, 65, 55, 18);
+  
+ // Multiline Embossed Description
+const descriptionText = document.getElementById("description").value;
+const lines = descriptionText.split('\n');
+lines.forEach((line, i) => {
+  drawEmbossedText(ctx, line, 95, 830 + i * 38, 24); // Adjust Y position and font size as needed
+});
+
+  // Draw Moves with emboss
+  const moveNames = document.querySelectorAll('.move-name');
+  const movePercents = document.querySelectorAll('.move-percent');
+  const moveNumbers = document.querySelectorAll('.move-number');
+
+  for (let i = 0; i < moveNames.length; i++) {
+    const name = moveNames[i].value || "";
+    const percent = movePercents[i].value || "";
+    const number = moveNumbers[i].value || "";
+
+    const y = 620 + i * 40;
+
+    drawEmbossedText(ctx, name, 100, y, 24);
+    drawEmbossedText(ctx, percent, 320, y, 18);
+    drawEmbossedText(ctx, number, 420, y, 18);
+  }
+
+  drawEmbossedText(ctx, "©2025 DAVEWARE™ / UNVERFUSS", 230, 1040, 14);
+  
+  canvas.classList.add("visible");
+}
+
 
   async function loadRarityImages() {
     for (const key in rarityBgUrls) {
@@ -284,6 +491,31 @@
     });
   }
 
+  // Set default yogurt and aura URLs
+  selectedYogurtUrl = "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/yogurt/black_cherry.png";
+  selectedAuraUrl = "https://raw.githubusercontent.com/Unverfuss/DAVEWARE/main/auras/autism.png";
+
+  // Event listeners for yogurt selection
+  document.querySelectorAll('.yogurt-options img').forEach(img => {
+    img.addEventListener('click', () => {
+      const url = img.getAttribute('src');
+      document.getElementById('selectedYogurt').src = url;
+      selectedYogurtUrl = url;
+    });
+  });
+
+  // Event listeners for aura selection
+  document.querySelectorAll('.aura-options img').forEach(img => {
+    img.addEventListener('click', () => {
+      const url = img.getAttribute('src');
+      document.getElementById('selectedAura').src = url;
+      selectedAuraUrl = url;
+    });
+  });
+
+  // Expose functions globally
+  window.generateCard = generateCard;
+  window.downloadCard = downloadCard;
 </script>
 
 </body>
