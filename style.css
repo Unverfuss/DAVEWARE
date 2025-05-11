@@ -227,6 +227,54 @@ button:active {
   z-index: 0;
 }
 
+number-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  margin: 10px;
+}
+
+.custom-number-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+}
+
+.custom-number-input input[type="number"] {
+  width: 60px;
+  text-align: center;
+  font-size: 1.2em;
+  padding: 6px 0;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  appearance: textfield;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-number-input input::-webkit-outer-spin-button,
+.custom-number-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.arrow.up {
+
+  margin-bottom: 5px;
+}
+
+.arrow.down {
+
+  margin-top: 5px;
+}
+
 /* Ensure all other elements inside the card layer above the background */
 .card *:not(.card-background) {
   position: relative;
