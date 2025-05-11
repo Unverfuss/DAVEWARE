@@ -17,12 +17,10 @@ body {
 
 .yogurt-thumb,
 .aura-thumb {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 8px;
-  object-fit: contain;
   cursor: pointer;
-  transition: border 0.2s ease;
 }
 
 .yogurt-options,
