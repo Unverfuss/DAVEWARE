@@ -5,6 +5,75 @@ body {
   height: 100vh;
 }
 
+.yogurt-button-wrapper,
+.aura-button-wrapper {
+  position: relative;
+  display: center;
+  align-items: center;
+  margin-top: 10px;
+  border-radius: 8px;
+  background: black;
+}
+
+.yogurt-thumb,
+.aura-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.yogurt-options,
+.aura-options {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
+  background: black;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.yogurt-button-wrapper:hover .yogurt-options,
+.aura-button-wrapper:hover .aura-options {
+  display: block;
+}
+
+.yogurt-options img,
+.aura-options img {
+  width: 50px;
+  height: 50px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.2s ease;
+}
+
+.yogurt-options img:hover,
+.aura-options img:hover {
+  transform: scale(1.1);
+}
+
+
+
+
+.moves {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+}
+
 }
 .container {
   background-color: red;
