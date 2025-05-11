@@ -2,8 +2,9 @@
 <head>
   <meta charset="UTF-8">
   <title>DAVEWARE™ CARD PRINTER V1</title>
-
-<style>
+  <link rel = "stylesheet" href="style.css"> 
+  
+  <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
@@ -322,23 +323,7 @@ document.querySelectorAll('.aura-options img').forEach(img => {
   }
 }
 
-// Load an image with proper CORS (if needed)
-const img = new Image();
-img.crossOrigin = 'Anonymous';  // This is important for cross-origin images
-img.src = 'https://example.com/path/to/image.jpg';
 
-img.onload = function() {
-  const canvas = document.getElementById("cardCanvas");
-  const ctx = canvas.getContext("2d");
-  
-  // Draw your image (or text, etc.)
-  ctx.drawImage(img, 0, 0);
-  
-  // Add any other canvas drawing logic here (text, shapes, etc.)
-  
-  // Now the canvas should not be tainted, and you can download it
-  downloadCard();
-};
 
 function drawEmbossedText(ctx, text, x, y, fontSize = 30, color = "#ffffff") {
   ctx.font = `${fontSize}px 'Comic Sans MS', cursive`;
@@ -472,20 +457,22 @@ lines.forEach((line, i) => {
   }
 
   function fileToImage(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
   function loadImage(src) {
     return new Promise((resolve) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.onload = () => resolve(img);
       img.src = src;
     });
