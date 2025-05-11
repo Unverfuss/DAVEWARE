@@ -190,6 +190,20 @@
   const tierButtons = document.querySelectorAll('#tierButtons button');
   const tierLabel = document.getElementById('tierLabel');
 
+  const input = document.getElementById('cardNumber');
+  const min = parseInt(input.min);
+  const max = parseInt(input.max);
+
+  document.querySelector('.arrow.up').addEventListener('click', () => {
+    let val = parseInt(input.value);
+    if (val < max) input.value = val + 1;
+  });
+
+  document.querySelector('.arrow.down').addEventListener('click', () => {
+    let val = parseInt(input.value);
+    if (val > min) input.value = val - 1;
+  });
+  
   const auraToForegroundMap = {
   "autism.png": "AUT.png",
   "bum.png": "BUM.png",
