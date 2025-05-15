@@ -76,7 +76,7 @@ body {
   gap: 10px;
 }
 
-}
+
 .container {
   background-color: red;
 }
@@ -94,7 +94,7 @@ a:hover {
   animation-direction: normal;
 }
 
-}
+
 @keyframes moveDiagonal {
   from { background-position: 0 0; }
   to { background-position: 40px 40px; }
@@ -109,10 +109,13 @@ button:active {
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); /* pressed effect */
 }
 
+
+
 #cardCanvas {
   opacity: 0;
-  display: none;
-  transition: opacity 0.3s ease;
+  display: block;
+  transition: opacity 1s ease;
+  position: fixed; top: 0; right: 10%;
   margin: 40px auto;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -126,7 +129,7 @@ button:active {
 }
 
 #cardCanvas {
-  transform: scale(0.5);         /* Shrink visually by 50% */
+  transform: scale(.8);         /* Shrink visually by 50% */
   transform-origin: center;  /* Control anchor point */
   margin: 40px auto;
 }
@@ -138,6 +141,40 @@ button:active {
   margin-top: 20px;
 }
 
+/* Set height of body and the document to 100% to enable "full page tabs" */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+/* Style tab links */
+.tablink {
+  background-color: #555;
+  color: white;
+  opacity: 100;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+
+.tablink:hover {
+  background-color: #777;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: rgb(0, 0, 0);
+  display: none;
+ 
+  height: 100%;
+}
+
+
+
 .tier-selector button {
   width: 50px;             /* Equal width */
   height: 50px;            /* Equal height */
@@ -146,7 +183,7 @@ button:active {
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
     /* Ensure the button is exactly the size we define */
-  adding: 0;               /* Remove any padding */
+  padding: 0;               /* Remove any padding */
   box-sizing: border-box;   /* Ensure box-sizing includes border */
 }
 
@@ -208,8 +245,8 @@ button:active {
 
 .card {
   position: relative;
-  width: 400px;
-  height: 600px;
+  width: 750px;
+  height: 1050px;
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
@@ -266,12 +303,30 @@ number-input-wrapper {
 
 
 .arrow.up {
-
+padding: 12px 20px;
+      font-size: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      margin: 0 10px;
   margin-bottom: 5px;
 }
 
 .arrow.down {
-
+padding: 12px 20px;
+      font-size: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      margin: 0 10px;
   margin-top: 5px;
 }
 

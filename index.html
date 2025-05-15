@@ -14,6 +14,9 @@
 
     .form-container {
       max-width: 600px;
+      align-content: center;
+      position: absolute; left: 10%; top: 10%;
+      left: 10px;
       margin: auto;
       background: white;
       padding: 24px;
@@ -52,7 +55,7 @@
       text-align: center;
     }
 
-    button {
+    .printerbutton {
       padding: 12px 20px;
       font-size: 16px;
       font-family: 'Segoe UI', sans-serif;
@@ -65,7 +68,7 @@
       margin: 0 10px;
     }
 
-    button:hover {
+    .printerbutton:hover {
       background-color: #45a049;
       transform: translateY(-2px);
     }
@@ -85,12 +88,24 @@
   </style>
 </head>
 <body>
+<canvas id="cardCanvas" width="750" height="1050" style="box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform-style: preserve-3d; transition: box-shadow 0.3s ease;"></canvas>
+
+  
+<button class="tablink" style="position: fixed; top: 0; left: 0; z-index: 10;" onclick="openPage('Home', this, 'red', '#e236f2', '#8d13b5') "id="defaultOpen" >Home</button>
+<button class="tablink" style="position: fixed; top: 0; left: 25%; z-index: 10;" onclick="openPage('Printer', this, 'green', '#80d182', '#4ea364')" >Printer</button>
+<button class="tablink" style="position: fixed; top: 0; left: 50%; z-index: 10;" onclick="openPage('Davipedia', this, 'blue', '#c7d921', '#a0b513')">Davipedia</button>
+<button class="tablink" style="position: fixed; top: 0; left: 75%; z-index: 10;" onclick="openPage('Other', this, 'orange', '#d92121', '#b51313')">Other</button>
 
 <canvas id="bgCanvas" style="position: fixed; top: -41px; left: 0; z-index: -1;"></canvas>  
-  
-<div class="form-container">
-  <h1>DAVEWARE™ CARD PRINTER</h1>
 
+<div id="Home" class="tabcontent">
+<h1 style="color:white; scale: 5; position: static; margin-top: 100px;">DAVEWARE™</h1>
+<h3 style="color: white; position: static; margin-top: 50px;">THE CARD GAME OF ALL TIME</h3>
+</div>
+
+<div id="Printer" class="tabcontent">
+  <div class="form-container">
+  <h1>DAVEWARE™ CARD PRINTER</h1>
   <label for="imgUpload">Upload Image:</label>
   <input type="file" id="imgUpload" accept="image/*" />
 
@@ -173,15 +188,24 @@
 </div>
 
   <div class="button-group">
-    <button onclick="generateCard()">PRINT CARD</button>
-    <button onclick="downloadCard()">DOWNLOAD CARD</button>
+    <button class="printerbutton" onclick="generateCard()">PRINT CARD</button>
+    <button class="printerbutton" onclick="downloadCard()">DOWNLOAD CARD</button>
   </div>
+  <h6>©2025 DAVEWARE™ / UNVERFUSS</h6>
 </div>
 
-<canvas id="cardCanvas" width="750" height="1050"></canvas>
-
-
 </div>
+</div>
+
+<div id="Davipedia" class="tabcontent">
+  
+</div>
+
+<div id="Other" class="tabcontent">
+  
+</div>
+
+
 
 <script>
   const bgCanvas = document.getElementById("bgCanvas");
@@ -291,8 +315,8 @@ document.querySelectorAll('.aura-options img').forEach(img => {
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 
-  const lineColor = "#80d182";
-  const backgroundColor = "#4ea364";
+   lineColor = "#80d182";
+   backgroundColor = "#4ea364";
   const speed = 0.5;
   const spacing = 50;
   let offset = 0;
@@ -340,8 +364,6 @@ document.querySelectorAll('.aura-options img').forEach(img => {
     alert("Unable to download due to security restrictions. Please check the content on the canvas.");
   }
 }
-
-
 
 function drawEmbossedText(ctx, text, x, y, fontSize = 30, color = "#ffffff") {
   ctx.font = `${fontSize}px 'Comic Sans MS', cursive`;
@@ -467,7 +489,6 @@ lines.forEach((line, i) => {
   canvas.classList.add("visible");
 }
 
-
   async function loadRarityImages() {
     for (const key in rarityBgUrls) {
       rarityImageMap[key] = await loadImage(rarityBgUrls[key]);
@@ -518,10 +539,72 @@ lines.forEach((line, i) => {
     });
   });
 
+  function openPage(pageName, elmnt, color, tablineColor, tabbackgroundColor) {
+  // Hide all elements with class="tabcontent" by default */
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+    console.log(i);
+
+  }
+
+  // Remove the background color of all tablinks/buttons
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.opacity = "100%";
+  }
+
+  // Show the specific tab content
+  document.getElementById(pageName).style.display = "block";
+  lineColor = tablineColor;
+  backgroundColor = tabbackgroundColor;
+  canvas.classList.remove("visible");
+
+  // Add the specific color to the button used to open the tab content
+  elmnt.style.opacity = "0%";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
   // Expose functions globally
   window.generateCard = generateCard;
   window.downloadCard = downloadCard;
 </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    const card2 = canvas.toDataURL("image/png");
+    const card = document.getElementById("cardCanvas");
+
+card.addEventListener("mousemove", (e) => {
+      const bounds = card.getBoundingClientRect();
+      const centerX = bounds.left + bounds.width / 2;
+      const centerY = bounds.top + bounds.height / 2;
+      const deltaX = e.clientX - centerX;
+      const deltaY = e.clientY - centerY;
+
+      const rotateY = deltaX / 10;  // smaller denominator = more tilt
+      const rotateX = -deltaY / 10;
+
+      gsap.to(card, {
+        duration: 0.4,
+        rotateX: rotateX,
+        rotateY: rotateY,
+        ease: "power2.out",
+      });
+    });
+
+    card.addEventListener("mouseleave", () => {
+      gsap.to(card, {
+        duration: 0.5,
+        rotateX: 0,
+        rotateY: 0,
+        ease: "power2.out",
+      });
+    });
+  </script>
 
 </body>
 </html>
