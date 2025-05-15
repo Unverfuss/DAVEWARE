@@ -129,7 +129,7 @@ button:active {
 }
 
 #cardCanvas {
-  transform: scale(.8);         /* Shrink visually by 50% */
+  transform: scale(.5);         /* Shrink visually by 50% */
   transform-origin: center;  /* Control anchor point */
   margin: 40px auto;
 }
